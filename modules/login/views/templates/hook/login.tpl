@@ -1,18 +1,17 @@
-<!-- Block login -->
-<div id="login_block_home" class="block">
-  <h4>Welcome!</h4>
-  <div class="block_content">
-    <p>Hello,
-       {if isset($qq_id) && $qq_id}
-           {$qq_id}
-       {else}
-           World
-       {/if}
-       !       
-    </p>   
-    <ul>
-      <li><a href="{$my_module_link}" title="Click this link">Click me!</a></li>
-    </ul>
-  </div>
+<div class="col-12">
+    <div>
+        <a href="">
+            <img src="img/login_qq.png" alt="Login as QQ"/>
+        </a>
+    </div>
+    <div>
+        <a href="">
+            <img src="img/login_weibo.png" alt="Login as Weibo"/>
+        </a>
+    </div>
+    <div>
+        <a href="">
+            <img src="" alt="Login as Alipay"/>
+        </a>
+    </div>
 </div>
-<!-- /Block login -->

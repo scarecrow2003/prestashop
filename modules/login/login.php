@@ -1,7 +1,7 @@
 <?php
 if (!defined('_PS_VERSION_'))
   exit;
- 
+
 class Login extends Module
 {
 	public function __construct()
@@ -27,9 +27,9 @@ class Login extends Module
 	  if (Shop::isFeatureActive())
 		Shop::setContext(Shop::CONTEXT_ALL);
 	 
-	  if (!parent::install() ||
+	  if (!parent::install()/* ||
 		!$this->registerHook('leftColumn') ||
-		!$this->registerHook('header')
+		!$this->registerHook('header')*/
 	  )
 		return false;
 	 
@@ -170,7 +170,7 @@ class Login extends Module
 		);
 		 
 		$helper = new HelperForm();
-		 
+
 		// Module, token and currentIndex
 		$helper->module = $this;
 		$helper->name_controller = $this->name;
@@ -210,7 +210,7 @@ class Login extends Module
 		return $helper->generateForm($fields_form);
 	}
 	
-	public function hookDisplayLeftColumn($params)
+	/*public function hookDisplayLeftColumn($params)
 	{
 	  $this->context->smarty->assign(
 		  array(
@@ -229,5 +229,14 @@ class Login extends Module
 	public function hookDisplayHeader()
 	{
 	  $this->context->controller->addCSS($this->_path.'css/login.css', 'all');
-	}
+	}*/
+
+    public function hookLoginHook($params) {
+        $this->context->smarty->assign(
+            array(
+                'test' =>'test0'
+            )
+        );
+        return $this->display(__FILE__, 'login.tpl');
+    }
 }
