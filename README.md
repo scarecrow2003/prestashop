@@ -1,2 +1,1 @@
-# prestashop
-prestashop
+Customize prestashop
