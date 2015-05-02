@@ -8,6 +8,58 @@
 
 class AuthController extends AuthControllerCore
 {
+
+    public function postProcess()
+    {
+        if (Tools::isSubmit('SubmitCreate'))
+            $this->processSubmitCreate();
+
+        if (Tools::isSubmit('submitAccount') || Tools::isSubmit('submitGuestAccount'))
+            $this->processSubmitAccount();
+
+        if (Tools::isSubmit('SubmitLogin'))
+            $this->processSubmitLogin();
+
+        if (Tools::isSubmit('SubmitVerify'))
+            $this->processSubmitVerify();
+    }
+
+    protected function processSubmitVerify()
+    {
+        $code = Tools::getValue('code');
+        $email = Tools::getValue('email');
+        if (isset($code) && $code != '' && isset($email) && $email != '') {
+            $resend = Tools::getValue('resend');
+            if (isset($resend) && $resend == 'true') {
+                $customer = new Customer();
+                $customer->email = $email;
+                $this->sendVerificationEmail($customer, true);
+                $this->context->smarty->assign('email_verify', 0);
+            } else {
+                $this->context->smarty->assign('email_verify', 1);
+                $db = Db::getInstance();
+                $result = $db->getRow("SELECT uid, date_created FROM `" . _DB_PREFIX_ . "email_verification` WHERE email = '" . $email . "' AND code = '" . $code . "' AND used = 0");
+                if ($result) {
+                    $date = $result['date_created'];
+                    if (time() > strtotime($date) + 10800) {
+                        $this->context->smarty->assign('resend', $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'] . '&resend=true');
+                        $this->context->smarty->assign('email', $email);
+                        $this->context->smarty->assign('status', 2);
+                    } else {
+                        $id = $result['uid'];
+                        $db->execute("UPDATE `" . _DB_PREFIX_ . "email_verification` SET used = 1 WHERE email = '" . $email . "' AND code = '" . $code . "' AND uid = " . $id);
+                        $db->execute("UPDATE `" . _DB_PREFIX_ . "customer` SET active = 1 WHERE id_customer = " . $id);
+                        $this->context->smarty->assign('status', 1);
+                    }
+                } else {
+                    $this->context->smarty->assign('status', 0);
+                }
+            }
+        } else {
+            $this->context->smarty->assign('email_verify', 0);
+        }
+    }
+
     /**
      * Process submit on an account
      */
@@ -75,12 +127,14 @@ class AuthController extends AuthControllerCore
 
                 // New Guest customer
                 $customer->is_guest = (Tools::isSubmit('is_new_customer') ? !Tools::getValue('is_new_customer', 1) : 0);
-                $customer->active = 1;
+                $customer->active = 0;
 
                 if (!count($this->errors))
                 {
                     if ($customer->add())
                     {
+                        $this->sendVerificationEmail($customer, false);
+                        Tools::redirect('index.php?controller=authentication&SubmitVerify=true');
                         if (!$customer->is_guest)
                             if (!$this->sendConfirmationMail($customer))
                                 $this->errors[] = Tools::displayError('The email cannot be sent.');
@@ -301,5 +355,23 @@ class AuthController extends AuthControllerCore
             }
             $this->context->smarty->assign('account_error', $this->errors);
         }
+    }
+
+    private function sendVerificationEmail(Customer $customer, $resend) {
+        $verification_key = md5($customer->email.rand());
+        if ($resend) {
+            $sql = "UPDATE `"._DB_PREFIX_."email_verification` SET code = '".$verification_key."', date_created = '".date('Y-m-d H:i:s', time())."' WHERE email = '".$customer->email."'";
+        } else {
+            $sql = "INSERT INTO `"._DB_PREFIX_."email_verification` (uid, email, code) VALUES (".$customer->id.", '".$customer->email."', '".$verification_key."')";
+        }
+        Db::getInstance()->execute($sql);
+        $link = new Link();
+        $verificationLink = $link->getPageLink("authentication")."&SubmitVerify=true&code=".$verification_key."&email=".$customer->email;
+        Mail::Send(
+            $this->context->language->id,
+            'emailVerification',
+            Mail::l('Prestashop Verification Email'),
+            array('{name}'=>$customer->firstname, '{email}'=>$customer->email, '{link}'=>$verificationLink),
+            $customer->email, $customer->firstname);
     }
 }

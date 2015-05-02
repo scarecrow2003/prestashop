@@ -8,6 +8,9 @@
 
 class Customer extends CustomerCore
 {
+    public $nickname;
+    public $address;
+    public $interest;
     public static $definition = array(
         'table' => 'customer',
         'primary' => 'id_customer',
@@ -42,6 +45,10 @@ class Customer extends CustomerCore
             'id_lang' => 					array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'copy_post' => false),
             'date_add' => 					array('type' => self::TYPE_DATE, 'validate' => 'isDate', 'copy_post' => false),
             'date_upd' => 					array('type' => self::TYPE_DATE, 'validate' => 'isDate', 'copy_post' => false),
+            'nickname' =>                   array('type' => self::TYPE_STRING, 'validate' => 'isName', 'size' => 32),
+            'address' =>                    array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
+            'interest' =>                   array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
+
         ),
     );
 }

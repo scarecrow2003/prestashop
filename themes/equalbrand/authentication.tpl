@@ -34,7 +34,19 @@
 {assign var='stateExist' value=false}
 {assign var="postCodeExist" value=false}
 {assign var="dniExist" value=false}
-{if !isset($email_create)}
+{if isset($email_verify)}
+    {if $email_verify == 0}
+        <p>{l s='An verification has been sent to your email address. Please verify your email address before processing. Thanks'}</p>
+    {elseif $email_verify == 1}
+        {if $status == 1}
+            <p>{l s='Email verified. Please login.'}</p>
+        {elseif $status == 2}
+            <p>{l s='Verification link expired.'}<a href="{$resend}">{l s='Click here to resend.'}</a></p>
+        {elseif $status == 0}
+            <p>{l s='Invalid email address or verification code.'}</p>
+        {/if}
+    {/if}
+{elseif !isset($email_create)}
 	<!--{if isset($authentification_error)}
 	<div class="alert alert-danger">
 		{if {$authentification_error|@count} == 1}

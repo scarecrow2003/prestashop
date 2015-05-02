@@ -84,7 +84,7 @@
                     </label>
                     <input class="is_required validate form-control" data-validate="isEmail" type="email" name="email" id="email" value="{$smarty.post.email}" />
                 </div>
-                {*<div class="form-group">
+                <div class="form-group">
                     <label>
                         {l s='Date of Birth'}
                     </label>
@@ -98,20 +98,6 @@
                             </select>
                         </div>
                         <div class="col-xs-4">
-							*}{*
-								{l s='January'}
-								{l s='February'}
-								{l s='March'}
-								{l s='April'}
-								{l s='May'}
-								{l s='June'}
-								{l s='July'}
-								{l s='August'}
-								{l s='September'}
-								{l s='October'}
-								{l s='November'}
-								{l s='December'}
-							*}{*
                             <select id="months" name="months" class="form-control">
                                 <option value="">-</option>
                                 {foreach from=$months key=k item=v}
@@ -128,7 +114,50 @@
                             </select>
                         </div>
                     </div>
-                </div>*}
+                </div>
+                <div class="form-group">
+                    <label for="nickname">
+                        {l s='Nick Name'}
+                    </label>
+                    <input class="validate form-control" data-validate="isName" type="text" id="nickname" name="nickname" value="{$smarty.post.nickname}"/>
+                </div>
+                <div class="form-group">
+                    <label for="address">
+                        {l s='Address'}
+                    </label>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <select name="province" id="province" class="form-control" onchange="getAreaList(this.value, 'city');">
+                                <option value="0">-</option>
+                                {foreach from=$provinces item=v}
+                                    <option value="{$v['areano']}" {if ($sl_province == $v['areano'])}selected="selected"{/if}>{$v['areaname']}&nbsp;&nbsp;</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="col-xs-4">
+                            <select id="city" name="city" class="form-control" onchange="getAreaList(this.value, 'area');">
+                                <option value="0">-</option>
+                                {foreach from=$cities item=v}
+                                    <option value="{$v['areano']}" {if ($sl_city == $v['areano'])}selected="selected"{/if}>{$v['areaname']}&nbsp;</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="col-xs-4">
+                            <select id="area" name="area" class="form-control">
+                                <option value="0">-</option>
+                                {foreach from=$areas item=v}
+                                    <option value="{$v['areano']}" {if ($sl_area == $v['areano'])}selected="selected"{/if}>{$v['areaname']}&nbsp;&nbsp;</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="interest">
+                        {l s='Interest'}
+                    </label>
+                    {*todo*}
+                </div>
                 <div class="required form-group">
                     <label for="old_passwd" class="required">
                         {l s='Current Password'}
@@ -218,3 +247,15 @@
         </a>
     </li>
 </ul>
+
+<script type="text/javascript">
+    function getAreaList(val, item) {
+        $('#'+item).load("index.php?controller=identity&getList="+val, "", function() {
+            document.getElementById(item).parentElement.getElementsByTagName('span')[0].innerHTML = "-&nbsp;&nbsp;";
+            if (item == 'city') {
+                document.getElementById('area').parentElement.getElementsByTagName('span')[0].innerHTML = "-&nbsp;&nbsp;";
+                document.getElementById('area').innerHTML = "<option value='0'>-</option>";
+            }
+        });
+    }
+</script>
