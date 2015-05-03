@@ -78,6 +78,21 @@ class IdentityController extends IdentityControllerCore
                 'sl_province' => $sl_province,
             ));
 
+            $cats = $this->getAllUnderCategory(12);
+            $interests = explode(',', $this->customer->interest);
+            $j = 0;
+            for ($i=0; $i<count($interests); $i++) {
+                while($j<count($cats)) {
+                    if (intval($interests[$i]) == $cats[$j]['id_category']) {
+                        $cats[$j]['selected'] = true;
+                        $j++;
+                        break;
+                    }
+                    $j++;
+                }
+            }
+            $this->context->smarty->assign("cats", $cats);
+
             if (Tools::isSubmit('submitIdentity'))
             {
                 $email = trim(Tools::getValue('email'));
@@ -179,6 +194,11 @@ class IdentityController extends IdentityControllerCore
     private function getParentAddressNo($child) {
         $parent = Db::getInstance()->getValue("SELECT parentno from `"._DB_PREFIX_."prov_city_area` WHERE areano = ".$child);
         return $parent;
+    }
+
+    private function getAllUnderCategory($cat) {
+        $category = new Category();
+        return $category->getChildren($cat, $this->context->language->id);
     }
 
 }

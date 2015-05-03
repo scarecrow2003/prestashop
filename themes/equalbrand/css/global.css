@@ -8302,4 +8302,21 @@ div.star.star_hover:after {
   .btn-pinterest:hover i {
     color: white; }
 
+.cat-list {
+  display: inline;
+  position: relative; }
+
+catsel {
+  background-image: url("../img/ticker.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  position: absolute;
+  bottom: -9px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  display: block;
+  overflow: hidden;
+  text-indent: -99em; }
+
 /*# sourceMappingURL=global.css.map */

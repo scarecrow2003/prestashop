@@ -154,9 +154,25 @@
                 </div>
                 <div class="form-group">
                     <label for="interest">
-                        {l s='Interest'}
+                        {l s='Interest: Please select your interests for us to give you accurate suggestion.'}
                     </label>
-                    {*todo*}
+                    <input class="form-control" type="hidden" name="interest" id="interest"/>
+                    <ul>
+                    {foreach from=$cats item=v}
+                        {$selected = ""}
+                        {if isset($v['selected']) && $v['selected']}
+                            {$selected = "cat-selected"}
+                        {/if}
+                         <li data-value="{$v['id_category']}" class="cat-list {$selected}">
+                             <a class="btn btn-default" href="#" role="button">
+                                 <span>{$v['name']}</span>
+                                 {if isset($v['selected']) && $v['selected']}
+                                    <catsel>selected</catsel>
+                                 {/if}
+                             </a>
+                         </li>
+                    {/foreach}
+                    </ul>
                 </div>
                 <div class="required form-group">
                     <label for="old_passwd" class="required">
@@ -258,4 +274,22 @@
             }
         });
     }
+
+    $('.cat-list a').click(function(e) {
+        e.preventDefault();
+        if ($(this).parent().hasClass("cat-selected")) {
+            $(this).parent().removeClass("cat-selected");
+            $(this).children("catsel").remove();
+        } else {
+            $(this).parent().addClass("cat-selected");
+            $(this).append("<catsel>selected</catsel>")
+        }
+        var selected = $(".cat-selected");
+        var interests = [];
+        for (var i=0; i<selected.length; i++) {
+            var item = selected[i];
+            interests.push($(item).data("value"));
+        }
+        $("#interest").val(interests.join(","));
+    })
 </script>

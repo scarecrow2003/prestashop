@@ -47,7 +47,7 @@ class Customer extends CustomerCore
             'date_upd' => 					array('type' => self::TYPE_DATE, 'validate' => 'isDate', 'copy_post' => false),
             'nickname' =>                   array('type' => self::TYPE_STRING, 'validate' => 'isName', 'size' => 32),
             'address' =>                    array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
-            'interest' =>                   array('type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'),
+            'interest' =>                   array('type' => self::TYPE_STRING, 'size' => 128),
 
         ),
     );
