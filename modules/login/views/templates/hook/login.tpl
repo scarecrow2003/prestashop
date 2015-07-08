@@ -1,5 +1,5 @@
 <script type="text/javascript"
-        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="{$LOGIN_QQ_ID}" data-redirecturi="#" charset="utf-8"></script>
+        src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="{$LOGIN_QQ_ID}" data-redirecturi="http://appletreesg.com/" charset="utf-8"></script>
 
 <div class="col-12">
     <div>
