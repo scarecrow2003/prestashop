@@ -234,7 +234,9 @@ class Login extends Module
     public function hookLoginHook($params) {
         $this->context->smarty->assign(
             array(
-                'LOGIN_QQ_ID' =>Configuration::get('LOGIN_QQ_ID')
+                'LOGIN_QQ_ID' => Configuration::get('LOGIN_QQ_ID'),
+                'LOGIN_WEIBO_ID' => Configuration::get('LOGIN_WEIBO_ID'),
+                'LOGIN_ALI_ID' => Configuration::get('LOGIN_ALI_ID')
             )
         );
         return $this->display(__FILE__, 'login.tpl');
